@@ -10,9 +10,9 @@ use std::fmt::{Debug, Display};
 
 use thiserror::Error;
 
-pub trait GenericError: Display + Debug {}
+pub trait GenericError: Display + Debug + Send + Sync {}
 
-impl<T: Display + Debug> GenericError for T {}
+impl<T: Display + Debug + Send + Sync> GenericError for T {}
 
 #[derive(Debug, Error)]
 pub enum ParseError {
@@ -26,7 +26,7 @@ pub enum ParseError {
 
 impl ParseError {
     #[inline]
-    fn format_violated<T: Display + Debug + 'static>(err: T) -> Self {
+    fn format_violated<T: Display + Debug + Send + Sync + 'static>(err: T) -> Self {
         Self::FormatViolated(Box::new(err))
     }
 }
