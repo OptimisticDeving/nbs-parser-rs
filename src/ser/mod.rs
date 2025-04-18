@@ -7,7 +7,7 @@ use tokio::io::{AsyncSeek, AsyncSeekExt};
 pub mod custom_instrument;
 pub mod header;
 pub mod layer;
-pub mod noteblock;
+pub mod noteslot;
 
 #[inline]
 pub(self) async fn skip_bytes<R: AsyncRead + Unpin>(reader: R, skip_cnt: u64) -> Result<()> {
@@ -66,18 +66,18 @@ impl NBS {
         let common = header.get_common();
         parse_options.verify_header(common)?;
 
-        let mut note_blocks = Vec::new();
+        let mut note_slots = Vec::new();
         let mut remaining_notes = parse_options.max_note_count;
 
         loop {
-            let Some(note_block) =
-                NoteBlock::parse_async(&mut reader, &header, remaining_notes).await?
+            let Some(note_slot) =
+                NoteSlot::parse_async(&mut reader, &header, remaining_notes).await?
             else {
                 break;
             };
 
-            remaining_notes -= note_block.notes.len();
-            note_blocks.push(note_block);
+            remaining_notes -= note_slot.notes.len();
+            note_slots.push(note_slot);
         }
 
         let layers = if common.layer_count != 0 {
@@ -91,7 +91,7 @@ impl NBS {
         } else {
             return Ok(Self {
                 header,
-                note_blocks,
+                note_slots,
                 ..Default::default()
             });
         };
@@ -127,7 +127,7 @@ impl NBS {
 
         Ok(Self {
             header,
-            note_blocks,
+            note_slots,
             layers,
             custom_instruments,
         })

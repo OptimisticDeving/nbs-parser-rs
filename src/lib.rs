@@ -43,7 +43,7 @@ pub struct CommonHeaderParseOptions {
 #[derive(Debug, Clone, Default)]
 pub struct NBS {
     pub header: Header,
-    pub note_blocks: Vec<NoteBlock>,
+    pub note_slots: Vec<NoteSlot>,
     pub layers: Vec<Layer>,
     pub custom_instruments: Vec<CustomInstrument>,
 }

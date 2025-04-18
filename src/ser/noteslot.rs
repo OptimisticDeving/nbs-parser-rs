@@ -45,7 +45,7 @@ impl Note {
     }
 }
 
-impl NoteBlock {
+impl NoteSlot {
     #[inline]
     pub async fn parse_async<R: AsyncRead + Unpin>(
         mut reader: R,

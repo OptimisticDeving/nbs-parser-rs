@@ -3,7 +3,7 @@ pub(crate) use instrument::Instrument;
 pub mod instrument;
 
 #[derive(Debug, Clone)]
-pub struct NoteBlock {
+pub struct NoteSlot {
     pub next_tick_jump: i16,
     pub notes: Vec<Note>,
 }
