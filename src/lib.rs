@@ -63,6 +63,7 @@ pub struct NBSParseOptions {
     pub max_layer_count: u16,
     pub max_custom_instrument_count: u8,
     pub custom_instrument_part_strategy: OptionalPartStrategy,
+    pub ignore_layer_name: bool,
 }
 
 impl NBSParseOptions {
@@ -85,6 +86,7 @@ impl Default for NBSParseOptions {
             max_layer_count: 256,
             max_custom_instrument_count: 128,
             custom_instrument_part_strategy: Default::default(),
+            ignore_layer_name: false,
         }
     }
 }

@@ -2,7 +2,10 @@ use super::*;
 
 impl OriginalLayer {
     #[inline]
-    pub async fn parse_async<R: AsyncRead + Unpin>(mut reader: R, name: String) -> Result<Self> {
+    pub async fn parse_async<R: AsyncRead + Unpin>(
+        mut reader: R,
+        name: Option<String>,
+    ) -> Result<Self> {
         Ok(Self {
             name,
             volume: reader.read_u8().await?,
@@ -15,7 +18,7 @@ impl NewLayer {
     pub async fn parse_async<R: AsyncRead + Unpin>(
         mut reader: R,
         header: &Header,
-        name: String,
+        name: Option<String>,
     ) -> Result<Self> {
         Ok(Self {
             name,
@@ -32,8 +35,18 @@ impl NewLayer {
 
 impl Layer {
     #[inline]
-    pub async fn parse_async<R: AsyncRead + Unpin>(mut reader: R, header: &Header) -> Result<Self> {
-        let name = read_string(&mut reader).await?;
+    pub async fn parse_async<R: AsyncRead + Unpin>(
+        mut reader: R,
+        header: &Header,
+        skip_name: bool,
+    ) -> Result<Self> {
+        let name = if skip_name {
+            skip_string(&mut reader).await?;
+
+            None
+        } else {
+            Some(read_string(&mut reader).await?)
+        };
 
         if header.get_version() <= 1 {
             return Ok(Self::Original(

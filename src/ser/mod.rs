@@ -88,7 +88,10 @@ impl NBS {
             let mut layers = Vec::new();
 
             for _ in 0..common.layer_count {
-                layers.push(Layer::parse_async(&mut reader, &header).await?);
+                layers.push(
+                    Layer::parse_async(&mut reader, &header, parse_options.ignore_layer_name)
+                        .await?,
+                );
             }
 
             layers
@@ -154,33 +157,35 @@ mod tests {
             for skip_metadata in [true, false].into_iter() {
                 for skip_telemetry in [true, false].into_iter() {
                     for skip_import_source in [true, false].into_iter() {
-                        println!(
-                            "Testing {} (skip_metadata: {skip_metadata}, skip_telemetry: {skip_telemetry}, skip_import_source: {skip_import_source})",
-                            file.path().to_string_lossy()
-                        );
+                        for ignore_layer_name in [true, false].into_iter() {
+                            println!(
+                                "Testing {} (skip_metadata: {skip_metadata}, skip_telemetry: {skip_telemetry}, skip_import_source: {skip_import_source}, ignore_layer_name: {ignore_layer_name})",
+                                file.path().to_string_lossy()
+                            );
 
-                        let parse_options = NBSParseOptions {
-                            common_header_parse_options: CommonHeaderParseOptions {
-                                skip_metadata,
-                                skip_telemetry,
-                                skip_import_source,
-                            },
-                            max_note_count: usize::MAX,
-                            max_custom_instrument_count: u8::MAX,
-                            max_layer_count: u16::MAX,
-                            ..Default::default()
-                        };
+                            let parse_options = NBSParseOptions {
+                                common_header_parse_options: CommonHeaderParseOptions {
+                                    skip_metadata,
+                                    skip_telemetry,
+                                    skip_import_source,
+                                },
+                                max_note_count: usize::MAX,
+                                max_custom_instrument_count: u8::MAX,
+                                max_layer_count: u16::MAX,
+                                ignore_layer_name,
+                                ..Default::default()
+                            };
 
-                        NBS::parse_async(
-                            BufReader::new(File::open(&file.path()).await?),
-                            &parse_options,
-                        )
-                        .await?;
+                            NBS::parse_async(
+                                BufReader::new(File::open(&file.path()).await?),
+                                &parse_options,
+                            )
+                            .await?;
+                        }
                     }
                 }
             }
         }
-
         Ok(())
     }
 }

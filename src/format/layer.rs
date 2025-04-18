@@ -1,12 +1,12 @@
 #[derive(Debug, Clone)]
 pub struct OriginalLayer {
-    pub name: String,
+    pub name: Option<String>,
     pub volume: u8,
 }
 
 #[derive(Debug, Clone)]
 pub struct NewLayer {
-    pub name: String,
+    pub name: Option<String>,
     pub is_locked: bool,
     pub volume: u8,
     pub stereo: u8,
@@ -20,7 +20,7 @@ pub enum Layer {
 
 impl Layer {
     #[inline]
-    pub const fn get_name(&self) -> &String {
+    pub const fn get_name(&self) -> &Option<String> {
         match self {
             Self::Original(original_layer) => &original_layer.name,
             Self::New(new_layer) => &new_layer.name,
