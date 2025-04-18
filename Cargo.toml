@@ -1,0 +1,11 @@
+[package]
+name = "nbs-parser-rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1.44", features = ["io-util"] }
+thiserror = "2"
+
+[dev-dependencies]
+tokio = { version = "1.44", features = ["macros", "rt", "fs"] }
