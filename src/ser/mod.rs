@@ -70,6 +70,10 @@ impl NBS {
         let mut remaining_notes = parse_options.max_note_count;
 
         loop {
+            if note_slots.len() == parse_options.max_note_slot_count {
+                return Err(ParseError::TooMuchData("note slots"));
+            }
+
             let Some(note_slot) =
                 NoteSlot::parse_async(&mut reader, &header, remaining_notes).await?
             else {

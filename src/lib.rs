@@ -59,6 +59,7 @@ pub enum OptionalPartStrategy {
 pub struct NBSParseOptions {
     pub common_header_parse_options: CommonHeaderParseOptions,
     pub max_note_count: usize,
+    pub max_note_slot_count: usize,
     pub max_layer_count: u16,
     pub max_custom_instrument_count: u8,
     pub custom_instrument_part_strategy: OptionalPartStrategy,
@@ -80,6 +81,7 @@ impl Default for NBSParseOptions {
         Self {
             common_header_parse_options: Default::default(),
             max_note_count: 65535,
+            max_note_slot_count: 16384,
             max_layer_count: 256,
             max_custom_instrument_count: 128,
             custom_instrument_part_strategy: Default::default(),
